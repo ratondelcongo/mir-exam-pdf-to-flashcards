@@ -34,6 +34,8 @@ export default function StudyPage({ params }: StudyPageProps) {
     params.then((p) => setPackageId(p.packageId));
   }, [params]);
 
+  const packages = useFlashcardsStore((state) => state.packages);
+  const loadPackages = useFlashcardsStore((state) => state.loadPackages);
   const pkg = useFlashcardsStore((state) =>
     packageId ? state.getPackage(packageId) : undefined,
   );
@@ -54,6 +56,13 @@ export default function StudyPage({ params }: StudyPageProps) {
   const markCorrect = useFlashcardsStore((state) => state.markCorrect);
   const markIncorrect = useFlashcardsStore((state) => state.markIncorrect);
   const resetProgress = useFlashcardsStore((state) => state.resetProgress);
+
+  // Load packages if not already loaded (for direct link access)
+  useEffect(() => {
+    if (packages.length === 0) {
+      loadPackages();
+    }
+  }, [packages.length, loadPackages]);
 
   // Initialize progress on mount
   useEffect(() => {
